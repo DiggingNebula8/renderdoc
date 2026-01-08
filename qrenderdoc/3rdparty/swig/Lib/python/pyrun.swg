@@ -1112,9 +1112,13 @@ SWIG_Python_GetSwigThis(PyObject *pyobj)
   (void)obj;
 # ifdef PyWeakref_CheckProxy
   if (PyWeakref_CheckProxy(pyobj)) {
-    pyobj = PyWeakref_GET_OBJECT(pyobj);
-    if (pyobj && SwigPyObject_Check(pyobj))
-      return (SwigPyObject*) pyobj;
+    PyObject *wobj = NULL;
+    if (PyWeakref_GetRef(pyobj, &wobj) > 0) {
+      pyobj = wobj;
+      if (pyobj && SwigPyObject_Check(pyobj))
+        return (SwigPyObject*) pyobj;
+      Py_XDECREF(wobj);
+    }
   }
 # endif
   return NULL;
@@ -1133,8 +1137,13 @@ SWIG_Python_GetSwigThis(PyObject *pyobj)
     } else {
 #ifdef PyWeakref_CheckProxy
       if (PyWeakref_CheckProxy(pyobj)) {
-	PyObject *wobj = PyWeakref_GET_OBJECT(pyobj);
-	return wobj ? SWIG_Python_GetSwigThis(wobj) : 0;
+	PyObject *wobj = NULL;
+	if (PyWeakref_GetRef(pyobj, &wobj) > 0) {
+	  SwigPyObject *result = wobj ? SWIG_Python_GetSwigThis(wobj) : 0;
+	  Py_XDECREF(wobj);
+	  return result;
+	}
+	return 0;
       }
 #endif
       obj = PyObject_GetAttr(pyobj,SWIG_This());

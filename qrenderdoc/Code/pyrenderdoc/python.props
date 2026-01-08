@@ -6,8 +6,8 @@
 
   <CustomPythonUsed>0</CustomPythonUsed>
 
-  <!-- output file of python36.dll, python36.zip, python36.lib etc -->
-	<PythonMajorMinor>36</PythonMajorMinor>
+  <!-- output file of python314.dll, python314.zip, python314.lib etc -->
+	<PythonMajorMinor>314</PythonMajorMinor>
 
 	<PythonIncludeDir>$(PythonBase)\include</PythonIncludeDir>
 	<PythonImportLib>$(PythonBase)\$(Platform)\python$(PythonMajorMinor).lib</PythonImportLib>
@@ -99,6 +99,15 @@
 	<PythonImportLib Condition="Exists('$(PythonOverride)\python$(PythonMajorMinor).lib')">$(PythonBase)\python$(PythonMajorMinor).lib</PythonImportLib>
 	<PythonImportLib Condition="Exists('$(PythonOverride)\libs\python$(PythonMajorMinor).lib')">$(PythonBase)\libs\python$(PythonMajorMinor).lib</PythonImportLib>
 </PropertyGroup>
+
+<Target Name="PythonDiagnostics" BeforeTargets="Build">
+	<Message Importance="high" Text="Python Configuration Diagnostics:" />
+	<Message Importance="high" Text="  VSPythonOverridePath: $(VSPythonOverridePath)" />
+	<Message Importance="high" Text="  PythonOverride: $(PythonOverride)" />
+	<Message Importance="high" Text="  CustomPythonUsed: $(CustomPythonUsed)" />
+	<Message Importance="high" Text="  PythonMajorMinor: $(PythonMajorMinor)" />
+	<Message Importance="high" Text="  PythonImportLib: $(PythonImportLib)" />
+</Target>
 
 <Target Name="PythonOverridden" AfterTargets="Build" Condition="'$(CustomPythonUsed)'!='0'">
 	<Message Importance="high" Text="Built against python from $(PythonOverride)" />
